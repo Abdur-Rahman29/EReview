@@ -12,7 +12,7 @@ groq_api_key = "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"
 
 st.markdown(get_styles(), unsafe_allow_html=True)
 
-image_path = "/content/Picture1.png"  # Adjust this path if needed
+image_path = "Picture1.png"  # Adjust this path if needed
 if os.path.exists(image_path):
     st.image(image_path, width=700,)
 else:
