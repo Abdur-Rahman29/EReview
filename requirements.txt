@@ -1,0 +1,7 @@
+streamlit
+groq
+python-docx
+pdfplumber
+PyPDF2 python-docx
+localtunnel@2.0.2
+python-pptx
