@@ -79,37 +79,48 @@ def get_styles():
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle glow effect */
     }
 
-    /* Dropdown styling */
-    .stExpander {
-        transition: background-color 0.3s; /* Smooth transition for hover effect */
-        width: 100%; /* Full width for expander */
-    }
+       /* Dropdown styling */
+.stExpander {
+    border: 1px solid #ccc; /* Border around the dropdown */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+    padding: 10px; /* Padding inside the dropdown */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
 
-    .stExpander:hover {
-        background-color: #e9e9e9; /* Slightly darker on hover */
-    }
+.stExpander:hover {
+    background-color: #e9e9e9; /* Slightly darker on hover */
+}
 
-    /* Tab content styling */
-    .tab-content {
-        display: flex;
-        flex-wrap: wrap; /* Allow wrapping of tab content */
-        justify-content: flex-start; /* Align content to the start */
-        margin-top: 10px; /* Space above tab content */
-        padding: 10px; /* Padding inside tab content */
-        width: 100%; /* Full width */
-        box-sizing: border-box; /* Include padding in width */
-    }
+/* Tab styling */
+.stTabs {
+    border-bottom: 2px solid #007bff; /* Underline for the active tab */
+}
 
-    .tab-item {
-        margin: 5px; /* Space between items */
-        padding: 10px; /* Padding for each item */
-        background-color: #f0f0f0; /* Light background for items */
-        border-radius: 5px; /* Rounded corners */
-        flex: 1 1 auto; /* Allow items to grow and shrink */
-        max-width: calc(100% - 10px); /* Prevent overflow */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
-    }
+.stTabs > div {
+    padding: 10px 15px; /* Padding for each tab */
+    cursor: pointer; /* Pointer cursor for better UX */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
 
+.stTabs > div:hover {
+    background-color: rgba(0, 123, 255, 0.1); /* Light background on hover */
+}
+
+.stTabs > div.st-active {
+    background-color: #007bff; /* Active tab background */
+    color: white; /* Active tab text color */
+    border-radius: 5px 5px 0 0; /* Rounded top corners for active tab */
+}
+
+/* Content inside tabs */
+.stTabContent {
+    padding: 15px; /* Padding inside the tab content */
+    background-color: #fff; /* White background for content */
+    border: 1px solid #ccc; /* Border around content */
+    border-radius: 0 0 5px 5px; /* Rounded bottom corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
     /* Response box styling */
     .response-box {
         background-color: #ffffff; /* White background for response box */
