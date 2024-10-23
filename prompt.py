@@ -15,30 +15,30 @@ def identify_errors_prompt(code):
 
 def complete_review_prompt(code, org_standards):
     return (
-        "Generate a complete code review for the following code file, "
-        "including suggested improvements based on the provided organization standards:\n"
+        "Based on the provided organization standards,"
+        "Generate a complete code review for the following code file including suggested improvements :\n"
         f"Standards: {org_standards}\n"
         f"Code: {code}"
     )
 
 def summary_review_prompt(code, org_standards):
     return (
-        "Provide a summary of code review for the following code file in less than 15 lines based on the standards:\n"
+        "Provide a summary of code review based on the org standards for the following code file in less than 15 lines :\n"
         f"Standards: {org_standards}\n"
         f"Code: {code}"
     )
 
 def modified_code_prompt(code, modified_code_context, org_standards):
     return (
-        "\nGiven the following modified code with changes denoted by '+' and '-' and the full code for context, please provide suggestions:\n"
+        "\nGiven the following modified code with changes denoted by '+' and '-' and the full code for context, please provide review of Code based on org standards, :\n"
           f"Modified Code:\n{modified_code_context}\n\n"
           f"Full Code for context:\n{code}\n\n"
-          "Provide suggested improvements based on the provided organization standards:\n"
+          "along with improvements:\n"
           f"Standards: {org_standards}"
     )
 def modified_code_prompt_summary(code, modified_code_context, org_standards):
     return (
-        "Provide a summary of code review focusing on the modified sections of the code in less than 15 lines based on the standards:\n"
+        "Provide a summary of code review based on the org standards focusing on the modified sections of the code in less than 15 lines :\n"
         f"Modified Code:\n{modified_code_context}\n\n"
         f"Full Code for context:\n{code}\n\n"
         f"Standards: {org_standards}"
