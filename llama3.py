@@ -8,7 +8,7 @@ from prompt import review_with_old,review
 from styles import get_styles  # Import your styles
 import re
 
-groq_api_key = "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"
+groq_api_key = "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"
 
 st.markdown(get_styles(), unsafe_allow_html=True)
 
