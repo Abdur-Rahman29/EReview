@@ -43,61 +43,81 @@ def parse_diff(old_code, new_code, diff):
     new_line_no = 0
     old_code_lines = old_code.splitlines()
     new_code_lines = new_code.splitlines()
-    
-    # Initialize counters for the old and new code lines
-    old_total_lines = len(old_code_lines)
-    new_total_lines = len(new_code_lines)
+
+    # Track removed line waiting for corresponding addition
+    pending_removal = None
 
     for line in diff:
         if line.startswith('-'):
-            # Line was removed from old_code
+            # Line removed from old_code
             old_line_no += 1
             change_content = line[1:].strip()  # Content of the removed line
-            if change_content and change_content not in ('--', '++'):  # Filter out unwanted lines
-                changes.append({
+            if change_content and change_content not in ('--', '++'):
+                pending_removal = {
                     "Old Line": old_line_no,
-                    "New Line": '',
-                    "Change": change_content,
-                    "Type": "Removed"
-                })
+                    "Change": change_content
+                }
         elif line.startswith('+'):
-            # Line was added to new_code
+            # Line added to new_code
+            new_line_no += 1
             change_content = line[1:].strip()  # Content of the added line
-            if change_content and change_content not in ('--', '++'):  # Filter out unwanted lines
-                new_line_no += 1
-                changes.append({
-                    "Old Line": '',
-                    "New Line": new_line_no,
-                    "Change": change_content,
-                    "Type": "Added"
-                })
+            if change_content and change_content not in ('--', '++'):
+                if pending_removal:
+                    # Handle modification
+                    changes.append({
+                        "Old Line": pending_removal["Old Line"],
+                        "New Line": new_line_no,
+                        "Change": f'{pending_removal["Change"]} --> {change_content}',
+                        "Type": "Modified"
+                    })
+                    pending_removal = None  # Clear pending removal after matching
+                else:
+                    # No pending removal, this is a new addition
+                    changes.append({
+                        "Old Line": '',
+                        "New Line": new_line_no,
+                        "Change": change_content,
+                        "Type": "Added"
+                    })
         elif line.startswith(' '):
-            # Line is unchanged, increment both counters
+            # Unchanged line, increment both counters
             old_line_no += 1
             new_line_no += 1
+            # If there's a pending removal that wasn't matched, mark it as removed
+            if pending_removal:
+                changes.append({
+                    "Old Line": pending_removal["Old Line"],
+                    "New Line": '',
+                    "Change": pending_removal["Change"],
+                    "Type": "Removed"
+                })
+                pending_removal = None  # Clear the pending removal
 
-    # Adjust the line numbers based on actual old and new code
+    # If there's a pending removal left at the end, append it as a removal
+    if pending_removal:
+        changes.append({
+            "Old Line": pending_removal["Old Line"],
+            "New Line": '',
+            "Change": pending_removal["Change"],
+            "Type": "Removed"
+        })
+
+    # Adjust line numbers based on actual content
     for change in changes:
-        if change["Type"] == "Removed":
-            # Adjust for actual old file line number
-            actual_old_line = int(change["Old Line"])
-            while actual_old_line <= old_total_lines and actual_old_line > 0:
-                change["Old Line"] = int(actual_old_line)
-                actual_old_line += 1
-                if actual_old_line <= old_total_lines and old_code_lines[actual_old_line - 1].strip() == change["Change"]:
+        if change["Type"] == "Removed" or change["Type"] == "Modified":
+            # Find the actual line number in old_code for removal or modification
+            for idx, old_line in enumerate(old_code_lines):
+                if old_line.strip() == change["Change"].split(" --> ")[0].strip():
+                    change["Old Line"] = idx + 1  # Convert to 1-based index
                     break
-            change["Old Line"]+=1
-        elif change["Type"] == "Added":
-            # Adjust for actual new file line number
-            actual_new_line = int(change["New Line"])
-            while actual_new_line <= new_total_lines and actual_new_line > 0:
-                change["New Line"] = int(actual_new_line)
-                actual_new_line += 1
-                if actual_new_line <= new_total_lines and new_code_lines[actual_new_line - 1].strip() == change["Change"]:
+        if change["Type"] == "Added" or change["Type"] == "Modified":
+            # Find the actual line number in new_code for addition or modification
+            for idx, new_line in enumerate(new_code_lines):
+                if new_line.strip() == change["Change"].split(" --> ")[-1].strip():
+                    change["New Line"] = idx + 1  # Convert to 1-based index
                     break
-            change["New Line"]+=1
     return changes
-
+    
 def compare_code(old_code, new_code):
     old_code_lines = old_code.splitlines(keepends=True)
     new_code_lines = new_code.splitlines(keepends=True)
